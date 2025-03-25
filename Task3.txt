@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Book Library</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+        button {
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        .borrowed {
+            background-color: red;
+        }
+        .available {
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Personal Book Library</h1>
+    <input type="text" id="search" placeholder="Search books..." onkeyup="filterBooks()">
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="book-list"></tbody>
+    </table>
+    
+    <script>
+        const books = [
+            { id: 1, title: "The Hobbit", category: "Fantasy", borrowed: false },
+            { id: 2, title: "1984", category: "Dystopian", borrowed: true },
+            { id: 3, title: "To Kill a Mockingbird", category: "Classic", borrowed: false }
+        ];
+
+        function renderBooks() {
+            const bookList = document.getElementById("book-list");
+            bookList.innerHTML = "";
+            books.forEach(book => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${book.title}</td>
+                    <td>${book.category}</td>
+                    <td>${book.borrowed ? "Borrowed" : "Available"}</td>
+                    <td>
+                        <button class="${book.borrowed ? 'borrowed' : 'available'}" onclick="toggleBorrow(${book.id})">
+                            ${book.borrowed ? "Return" : "Borrow"}
+                        </button>
+                    </td>
+                `;
+                bookList.appendChild(row);
+            });
+        }
+
+        function toggleBorrow(id) {
+            const book = books.find(book => book.id === id);
+            if (book) {
+                book.borrowed = !book.borrowed;
+                renderBooks();
+            }
+        }
+
+        function filterBooks() {
+            const searchValue = document.getElementById("search").value.toLowerCase();
+            books.forEach((book, index) => {
+                const row = document.querySelector(`#book-list tr:nth-child(${index + 1})`);
+                if (book.title.toLowerCase().includes(searchValue)) {
+                    row.style.display = "";
+                } else {
+                    row.style.display = "none";
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", renderBooks);
+    </script>
+</body>
+</html>
